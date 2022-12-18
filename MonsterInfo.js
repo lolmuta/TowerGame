@@ -12,11 +12,19 @@ class MonsterInfo {
         this.speed = speed;
         this.color = color;
         this.status = 0;
+        this.life = 2;
     }
     setRun(){
         this.status = 1;
         this.#updateV();
         return this;
+    }
+    setBeAttackedDamage(damage){
+        this.life -= damage;
+        const die = this.life<=0;
+        if(die){
+            this.status = 3;
+        }
     }
     isFinishPath(){
         const isFinish = this.status === 2;
@@ -26,6 +34,11 @@ class MonsterInfo {
         const isRunning = this.status === 1;
         return isRunning;
     }
+    isDie(){
+        const die =  this.status === 3;
+        return die;
+    }
+    
     moving(){
         if(this.isFinishPath()){
             return;
@@ -56,7 +69,6 @@ class MonsterInfo {
         return atPoint;
     }
     #updateV(){
-        debugger;
         const i2 = this.pathIndex + 1;
         const point2 = this.paths[i2];
         const x1 = this.x * 1.0;
