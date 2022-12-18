@@ -1,4 +1,7 @@
 # 塔防小遊戲
+
+![image](https://user-images.githubusercontent.com/19727471/208283262-007e42a5-4ef2-404a-8062-18034a87dfcb.png)
+
 - 目前功能
     - 可設定釋放怪物頻率
     - 可設定怪物行走速度
