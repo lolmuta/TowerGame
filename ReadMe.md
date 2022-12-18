@@ -16,4 +16,10 @@
 - 待實作功能
     - 增設建立箭塔 ui
     - 調整射中怪物的位置
+
+- 專案特點
+    - 使用 javascript class
+    - 事件註冊  
+        - 如怪物出現的時機事件，發射子彈的事件
+    - 仿 jquery 的串鏈 style, 與一點 rxjs style
     
