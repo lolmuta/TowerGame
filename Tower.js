@@ -28,8 +28,8 @@ class Tower{
     getDamage(){
         return this.damge;
     }
-    setShootTargetEvent(shootTargetEvent){
-        this.shootTargetEvent = shootTargetEvent;
+    setMisslePool(misslePool){
+        this.misslePool = misslePool;
         return this;
     }
     setFreqFunc(){
@@ -40,7 +40,9 @@ class Tower{
             if(target){
                 const missle = new Missle(_this.x, _this.y, _this);
                 missle.setTarget(target);
-                _this.shootTargetEvent(missle);
+                //_this.shootTargetEvent(missle);
+                missle.setRun();
+                _this.misslePool.push(missle);
 
             }
         });

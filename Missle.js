@@ -6,7 +6,13 @@ class Missle {
         this.h = 4;
         this.speed = 4;
         this.tower = tower;
-        this.status = 0;//0: wait 1: moving 2: finish
+        this.status = 0;//0: wait 1: run 2: hit 3:cancel
+        this.mStatus={
+            wait :0,
+            run : 1,
+            hit:2,
+            cancel:3
+        }
     }
     setTarget(targetMonster) {
         this.targetMonster = targetMonster;
@@ -16,17 +22,28 @@ class Missle {
         return this.targetMonster;
     }
     setRun() {
-        this.status = 1;
+        this.status = this.mStatus.run;
         return this;
     }
-    setFinish() {
-        this.status = 2;
+
+    setHit(){
+        this.status = this.mStatus.hit;
         return this;
     }
-    isFinishPath() {
-        const isFinish = this.status === 2;
-        return isFinish;
+    setCancel(){
+        this.status = this.mStatus.cancel;
+        return this;
     }
+    isRun(){
+        return this.status === this.mStatus.run;
+    }
+    isHit(){
+        return this.status ===  this.mStatus.hit;
+    }
+    isCancel(){
+        return this.status === this.mStatus.cancel;
+    }
+   
     getTower() {
         return this.tower;
     }
@@ -34,20 +51,22 @@ class Missle {
         return this.tower.getDamage();
     }
     moving() {
-        //若怪已到達終點，則也要取消子彈
-        if (this.targetMonster.status === 2) {
-            this.status = 2;
+        //若怪已到達終點，則也要取消子彈擊中
+        const targetMonster = this.targetMonster;
+        if (targetMonster.status === 2) {
+            this.status = this.mStatus.cancel;//取消
             return;
         }
         this.#updateV();
         const x1 = this.x * 1.0;
         const y1 = this.y * 1.0;
-        const x2 = this.targetMonster.x * 1.0;
-        const y2 = this.targetMonster.y * 1.0;
+        const x2 = targetMonster.x * 1.0;
+        const y2 = targetMonster.y * 1.0;
 
-        const isAtPoint2 = this.#isAtPoint(x1, y1, x2, y2, this.speed);
-        if (isAtPoint2) {
-            this.status = 2;
+        const isHit = this.#isAtPoint(x1, y1, x2, y2, this.speed);
+        
+        if (isHit) {
+            this.status = this.mStatus.hit;//hit
             return;
         }
         this.x += this.vx;

@@ -1,4 +1,4 @@
-class MonsterInfo {
+class Monster {
     constructor(w, h, color, speed, paths) {
         this.paths = [];
         this.paths = paths;
@@ -13,6 +13,7 @@ class MonsterInfo {
         this.color = color;
         this.status = 0;
         this.life = 2;
+        this.score = 4;
     }
     setRun(){
         this.status = 1;
@@ -38,7 +39,9 @@ class MonsterInfo {
         const die =  this.status === 3;
         return die;
     }
-    
+    // draw(){
+    //     this.drawFunc(this);
+    // }
     moving(){
         if(this.isFinishPath()){
             return;
@@ -53,8 +56,10 @@ class MonsterInfo {
         if(isAtPoint2){
             //debugger;
             const outBound = (++this.pathIndex) > (this.paths.length -2);
+            const _this = this;
             if(outBound){
                 this.status = 2;
+
                 return;
             }
             this.#updateV();

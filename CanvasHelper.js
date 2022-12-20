@@ -36,6 +36,9 @@ class DocumentHelper {
     updateLife(life) {
         document.getElementById('life').textContent = life;
     }
+    updateScore(score) {
+        document.getElementById('score').innerHTML = score;
+    }
     updateGameInfo(gameInfo) {
         document.getElementById('gameInfo').innerHTML = gameInfo;
     }
