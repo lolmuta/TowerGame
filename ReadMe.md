@@ -1,6 +1,8 @@
 # 塔防小遊戲
 
 ![image](https://user-images.githubusercontent.com/19727471/208283262-007e42a5-4ef2-404a-8062-18034a87dfcb.png)
+![image](https://user-images.githubusercontent.com/19727471/208941829-18681238-0a20-4e46-93f9-47db296a3a85.png)
+
 - 專案特點
     - 使用 javascript class
     - 事件註冊  
