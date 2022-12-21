@@ -53,7 +53,7 @@ class Missle {
     moving() {
         //若怪已到達終點，則也要取消子彈擊中
         const targetMonster = this.targetMonster;
-        if (targetMonster.status === 2) {
+        if (!targetMonster || targetMonster.status === 2) {
             this.status = this.mStatus.cancel;//取消
             return;
         }

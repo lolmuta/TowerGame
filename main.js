@@ -9,11 +9,23 @@ const player = {
 //定義 monsters
 const paths = [
     { x: 10, y: 10 },
-    { x: 200, y: 10 },
-    { x: 200, y: 200 },
-    { x: 10, y: 200 },
+    { x: 210, y: 10 },
+    { x: 210, y: 210 },
+    { x: 10, y: 210 },
     { x: 10, y: 10 }
 ];
+//定義建塔的位置
+const towerPlaceArea = [
+    { x: 110 - 40, y: 110 - 40 },
+    { x: 110 - 40, y: 110 },
+    { x: 110 - 40, y: 110 + 40 },
+    { x: 110 - 0, y: 110 - 40 },
+    { x: 110 - 0, y: 110 },
+    { x: 110 - 0, y: 110 + 40 },
+    { x: 110 + 40, y: 110 - 40 },
+    { x: 110 + 40, y: 110 },
+    { x: 110 + 40, y: 110 + 40 },
+]
 const monsters = new Monsters()
     .addMonster(new Monster(20, 20, 'red', 2, paths))
     .addMonster(new Monster(20, 20, 'green', 2, paths))
@@ -25,57 +37,100 @@ const monsters = new Monsters()
     .setFinishEvent(function () {
         documentHelper.updateGameInfo("monsters all release");
     })
-    .setMonsterReachDest(function(destMonster){
+    .setMonsterReachDest(function (destMonster) {
         player.life--;
         console.log("monster leave!");
         documentHelper.updateLife(player.life);
     })
-    .setMonsterDieEvent(function(dieMonster){
+    .setMonsterDieEvent(function (dieMonster) {
         const score = dieMonster.score;
         player.score += score;
         documentHelper.updateScore(player.score);
     })
-    .setDrawMonsterEvent(function(monster){
+    .setDrawMonsterEvent(function (monster) {
         const x = monster.x;
         const y = monster.y;
         const h = monster.h;
         const w = monster.w;
         const color = monster.color;
-        canvasHelper.drawMonster(x, y, w, h, color);
+        //canvasHelper.drawMonster(x, y, w, h, color);
+        canvasHelper.drawMonsterEllipse(x, y, w, h, color);
     });
 
 //定義飛彈
 const missles = new Missles()
-    .setDrawMissleEvent(function(missle){
+    .setDrawMissleEvent(function (missle) {
         canvasHelper.drawMissle(missle.x, missle.y, missle.w, missle.h);
     })
-    .setMissleHitEvent(function(missle){
+    .setMissleHitEvent(function (missle) {
         console.log("missle hit monster");
     })
-    .setMonsterKilledEvent(function(monster){
+    .setMonsterKilledEvent(function (monster) {
         console.log("monster is killed!");
     })
     ;
 
-const tower = new Tower()
-    .setSize(20, 20)
-    .setLocation(100, 100)
-    .setDamge(1)
-    .setRange(400)
-    .setFreq(40)
-    .setMonsters(monsters.getDrawMonstersPool())
-    .setMisslePool(missles.getMisslePool());
 
 const towers = new Towers()
-    .addTower(tower)
-    .setDrawEvent(function(tower){
-        canvasHelper.drawTower(tower.x, tower.y, tower.w, tower.h);
+    .setDrawEvent(function (tower) {
+        canvasHelper.drawTowerEllipse(tower.x, tower.y, tower.w, tower.h, tower.color);
     });
 
+function buildTower(tower) {
+    towers.addTower(tower)
+}
+
+const towerFactory = new TowerFactory();
+documentHelper.updateTowerKind(towerFactory.getTowerKindDict(),
+    function (towerId) {
+        selectedTowerId = towerId;
+        const towerName = towerFactory.getTowerKindDict()[towerId].towerName;
+        documentHelper.updateGameInfo("now you select tower " + towerName );
+    });
+
+canvasHelper.setClickEvent(function (x1, y1) {
+    for (let index = 0; index < towerPlaceArea.length; index++) {
+        const element = towerPlaceArea[index];
+        const x2 = element.x;
+        const y2 = element.y;
+        const distance = CommonHelper.getDistance(x1, y1, x2, y2);
+        //console.log(`(${index})x2:${x2}, y2:${y2} distance is ${distance}`);
+        if (distance < 10) {
+            if (isBuild && selectedTowerId) {
+                const msg = `Are you sure you want to build this tower?`;
+                if (window.confirm(msg)) {
+                    const towerXy =  towerPlaceArea.splice(index, 1)[0];
+                    const newTower = towerFactory.getNewTowerByTowerId(selectedTowerId)
+                            .setLocation(towerXy.x, towerXy.y);
+
+                    buildTower(newTower);
+                    break;
+
+                }else {
+                    console.log("cancel");
+                }  
+            }
+        }
+        
+    }
+    
+})
+
+//user build tower
+let isBuild = true;
+let selectedTowerId = 'basicTower';
+
+buildTower(
+    towerFactory.getNewTowerByTowerId('basicTower')
+        .setLocation(towerPlaceArea[0].x, towerPlaceArea[0].y)
+);
 
 
 function drawEmpty() {
     canvasHelper.clearRect();
+}
+function drawBuildLocation() {
+    canvasHelper.drawTowerBuildLocation(towerPlaceArea);
 }
 
 function monsterAnimation() {
@@ -87,14 +142,15 @@ function isGameOver() {
 }
 
 
-function towerAnimation(){
+function towerAnimation() {
     towers.doAnimation();
 }
-function missleAnimation(){
+function missleAnimation() {
     missles.doAnimation();
 }
 function animate() {
     drawEmpty();
+    drawBuildLocation();
     monsterAnimation();
     towerAnimation();
     missleAnimation();

@@ -1,16 +1,41 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<title>Tower Game</title>
+    <title>Tower Game</title>
+    <link rel="stylesheet" href="main.css">
 </head>
+
 <body>
 
-<h1>Tower Game</h1>
-<h2>life : <span id="life">2</span></h2>
-<h2>score : <span id="score">0</span></h2>
-<pre id="gameInfo"></pre>
+    <h1>Tower Game</h1>
+    <h2>life : <span id="life">2</span></h2>
+    <h2>score : <span id="score">0</span></h2>
+    <button>start</button>
+    <pre id="gameInfo"></pre>
+    <canvas id="canvasMain" class="canvas-main"></canvas>
+    <aside>
+        <h1>select tower</h1>
+        <div id="towerKind">
+            <div class="gallery">
+                <img src="" alt="Cinque Terre" width="600" height="400">
+                <div class="desc">Add a description of the image here</div>
+            </div>
+            <div class="gallery">
+                <img src="" alt="Forest" width="600" height="400">
+                <div class="desc">Add a description of the image here</div>
+            </div>
+
+            <div class="gallery">
+                <img src="" alt="Northern Lights" width="600" height="400">
+                <div class="desc">Add a description of the image here</div>
+            </div>
+        </div>
+
+    </aside>
 </body>
 <script src="CanvasHelper.js"></script>
+<script src= "CommonHelper.js"></script>
 <script src="Monster.js"></script>
 <script src="Freq.js"></script>
 <script src="Monsters.js"></script>
@@ -19,4 +44,5 @@
 <script src="Missle.js"></script>
 <script src="Missles.js"></script>
 <script src="main.js"></script>
+
 </html>

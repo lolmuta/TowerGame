@@ -12,6 +12,7 @@ class Towers{
     }
     doAnimation(){
         this.towers.forEach(tower => {
+           // debugger;
             this.drawEvent(tower);
             tower.shoot();
         });

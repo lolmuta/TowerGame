@@ -37,6 +37,11 @@ class Missles {
             }
         
             const monster = missle.getTarget();
+            if(!monster){
+                const destMissle = this.misslePool.splice(i, 1)[0];
+                continue;
+            }
+
             if (monster.isDie()) {
                 const destMissle = this.misslePool.splice(i, 1)[0];
                 continue;

@@ -1,0 +1,28 @@
+body{
+  max-width: 800px;
+}
+.canvas-main{
+  float:left;
+  border: 1px solid blue;
+}
+div.gallery {
+    margin: 2px;
+    border: 1px solid #ccc;
+    float: left;
+    width: 200px;
+  }
+  
+  div.gallery:hover {
+    border: 1px solid #777;
+  }
+  
+  div.gallery img {
+    width: 100%;
+    height: auto;
+  }
+  
+  div.desc {
+    padding: 5px;
+    text-align: left;
+    word-wrap: break-word;
+  }
