@@ -1,5 +1,5 @@
 class Monster {
-    constructor(w, h, color, speed, paths) {
+    constructor(w, h, color, speed, life, paths) {
         this.paths = [];
         this.paths = paths;
         this.pathIndex = 0;
@@ -12,7 +12,8 @@ class Monster {
         this.speed = speed;
         this.color = color;
         this.status = 0;
-        this.life = 2;
+        this.currLife = life;
+        this.life = life;
         this.score = 4;
     }
     setRun(){
@@ -21,8 +22,8 @@ class Monster {
         return this;
     }
     setBeAttackedDamage(damage){
-        this.life -= damage;
-        const die = this.life<=0;
+        this.currLife -= damage;
+        const die = this.currLife<=0;
         if(die){
             this.status = 3;
         }
@@ -39,24 +40,48 @@ class Monster {
         const die =  this.status === 3;
         return die;
     }
-    // draw(){
-    //     this.drawFunc(this);
+    isWait(){
+        const isWait = this.status === 0;
+        return isWait;
+    }
+    // moving(){
+    //     if(this.isFinishPath()){
+    //         return;
+    //     }
+    //     const i2 = this.pathIndex + 1;
+    //     const point2 = this.paths[i2];
+    //     const x2 = point2.x;
+    //     const y2 = point2.y;
+    //     const nextX = this.x + this.vx;
+    //     const nextY = this.y + this.vy;
+    //     const isAtPoint2 = this.#isAtPoint(nextX, nextY, x2, y2, this.speed);
+    //     if(isAtPoint2){
+    //         //debugger;
+    //         const outBound = (++this.pathIndex) > (this.paths.length -2);
+    //         const _this = this;
+    //         if(outBound){
+    //             this.status = 2;
+
+    //             return;
+    //         }
+    //         this.#updateV();
+    //     }
+    //     this.x += this.vx;
+    //     this.y += this.vy;
+    //     return this;
     // }
-    moving(){
+    movingEnhance(){
         if(this.isFinishPath()){
             return;
         }
-        const i2 = this.pathIndex + 1;
-        const point2 = this.paths[i2];
-        const x2 = point2.x;
-        const y2 = point2.y;
-        const nextX = this.x + this.vx;
-        const nextY = this.y + this.vy;
-        const isAtPoint2 = this.#isAtPoint(nextX, nextY, x2, y2, this.speed);
+        const point2 = this.paths[this.pathIndex + 1];  
+        const isAtPoint2 = this.#isAtPoint(this.x, this.y, point2.x, point2.y, this.speed);      
+        // const isAtPoint2 = this.#isAtPointWithVector(this.x, this.y, point2.x, point2.y, this.speed,
+        //     {x:this.vx, y: this.vy});
+        
         if(isAtPoint2){
             //debugger;
             const outBound = (++this.pathIndex) > (this.paths.length -2);
-            const _this = this;
             if(outBound){
                 this.status = 2;
 
@@ -69,6 +94,19 @@ class Monster {
         return this;
     }
     #isAtPoint(x1, y1, x2, y2, unitD){
+        const distance = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+        const atPoint = distance < unitD;
+        return atPoint;
+    }
+    #isAtPointWithVector(x1, y1, x2, y2, unitD, vxy){
+        const vector = {
+            x : x2 - x1,
+            y : y2 - x1
+        };
+        const notOverPoint2 = (vxy.x * vector.x >= 0) && (vxy.y * vector.y >=0);
+        if(notOverPoint2){
+            return false;
+        }
         const distance = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
         const atPoint = distance < unitD;
         return atPoint;

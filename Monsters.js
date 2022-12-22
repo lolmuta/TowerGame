@@ -92,14 +92,23 @@ class Monsters{
             }        
         }
     }
-    #movingMonsters(){
-        
+    #movingMonsters(){        
         for (let i = 0; i < this.drawMonstersPool.length; i++) {
             const monster = this.drawMonstersPool[i];
-            monster.moving();
+            //monster.moving();
+            monster.movingEnhance();
         }    
     }
     getDrawMonstersPool(){
         return this.drawMonstersPool;
+    }
+    isMonstersAllFinish(){
+        const monsters = this.monsters;
+        const oriCount = monsters.length;
+        const newCount = monsters.filter(
+            x => x.isDie() || x.isFinishPath()).length;
+        
+        const isFinish =  oriCount === newCount;
+        return isFinish;
     }
 }

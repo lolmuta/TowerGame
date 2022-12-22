@@ -8,31 +8,43 @@ const player = {
 
 //定義 monsters
 const paths = [
-    { x: 10, y: 10 },
-    { x: 210, y: 10 },
-    { x: 210, y: 210 },
-    { x: 10, y: 210 },
-    { x: 10, y: 10 }
+    { x: 10, y: 10 + 20 },
+    { x: 210, y: 10 + 20 },
+    { x: 210, y: 210 + 20  },
+    { x: 10, y: 210 + 20 },
+    { x: 10, y: 10 + 20 }
 ];
 //定義建塔的位置
 const towerPlaceArea = [
-    { x: 110 - 40, y: 110 - 40 },
-    { x: 110 - 40, y: 110 },
-    { x: 110 - 40, y: 110 + 40 },
-    { x: 110 - 0, y: 110 - 40 },
-    { x: 110 - 0, y: 110 },
-    { x: 110 - 0, y: 110 + 40 },
-    { x: 110 + 40, y: 110 - 40 },
-    { x: 110 + 40, y: 110 },
-    { x: 110 + 40, y: 110 + 40 },
+    { x: 110 - 40, y: 110 - 40 + 20 },
+    { x: 110 - 40, y: 110 + 20 },
+    { x: 110 - 40, y: 110 + 40+ 20  },
+    { x: 110 - 0, y: 110 - 40+ 20  },
+    { x: 110 - 0, y: 110 + 20 },
+    { x: 110 - 0, y: 110 + 40+ 20  },
+    { x: 110 + 40, y: 110 - 40 + 20 },
+    { x: 110 + 40, y: 110 + 20 },
+    { x: 110 + 40, y: 110 + 40 + 20 },
 ]
 const monsters = new Monsters()
-    .addMonster(new Monster(20, 20, 'red', 2, paths))
-    .addMonster(new Monster(20, 20, 'green', 2, paths))
-    .addMonster(new Monster(20, 20, 'red', 2, paths))
-    .addMonster(new Monster(20, 20, 'green', 2, paths))
-    .addMonster(new Monster(20, 20, 'red', 2, paths))
-    .addMonster(new Monster(20, 20, 'green', 2, paths))
+    .addMonster(new Monster(20, 20, 'red', 2, 4,  paths))
+    .addMonster(new Monster(20, 20, 'green', 2, 4, paths))
+    .addMonster(new Monster(20, 20, 'red', 2, 4, paths))
+    .addMonster(new Monster(20, 20, 'green', 2, 4, paths))
+    .addMonster(new Monster(20, 20, 'red', 2, 4, paths))
+    .addMonster(new Monster(20, 20, 'green', 2, 4, paths))
+    // .addMonster(new Monster(20, 20, 'red', 2, 4, paths))
+    // .addMonster(new Monster(20, 20, 'green', 2, 4, paths))
+    // .addMonster(new Monster(20, 20, 'red', 2, 4, paths))
+    // .addMonster(new Monster(20, 20, 'green', 2, 4, paths))
+    // .addMonster(new Monster(20, 20, 'red', 2, 4, paths))
+    // .addMonster(new Monster(20, 20, 'green', 2, 4, paths))
+    // .addMonster(new Monster(20, 20, 'red', 2, 8, paths))
+    // .addMonster(new Monster(20, 20, 'green', 2, 8, paths))
+    // .addMonster(new Monster(20, 20, 'red', 2, 8, paths))
+    // .addMonster(new Monster(20, 20, 'green', 2, 8, paths))
+    // .addMonster(new Monster(20, 20, 'red', 2, 8, paths))
+    // .addMonster(new Monster(20, 20, 'green', 2, 8, paths))
     .setFreqC(16)
     .setFinishEvent(function () {
         documentHelper.updateGameInfo("monsters all release");
@@ -53,8 +65,9 @@ const monsters = new Monsters()
         const h = monster.h;
         const w = monster.w;
         const color = monster.color;
-        //canvasHelper.drawMonster(x, y, w, h, color);
         canvasHelper.drawMonsterEllipse(x, y, w, h, color);
+        const lifePercent = monster.currLife / monster.life;
+        canvasHelper.drawMonsterLife(x, y, w, h, lifePercent);
     });
 
 //定義飛彈
@@ -77,16 +90,36 @@ const towers = new Towers()
     });
 
 function buildTower(tower) {
-    towers.addTower(tower)
+    towers.addTower(tower);
+    drawBuildLocation();
+    towerAnimation();
 }
 
 const towerFactory = new TowerFactory();
-documentHelper.updateTowerKind(towerFactory.getTowerKindDict(),
-    function (towerId) {
+let gameStatus = 1;//0:stop // 1: start // 2:restart
+documentHelper
+    .updateTowerKind(towerFactory.getTowerKindDict())
+    .setTowerKindSelectEvent( function (towerId) {
         selectedTowerId = towerId;
         const towerName = towerFactory.getTowerKindDict()[towerId].towerName;
-        documentHelper.updateGameInfo("now you select tower " + towerName );
+        documentHelper.updateGameInfo("now you select tower " + towerName);
+    })
+    .setStartButtonClickEvent(function(e){
+        const btn = e.target;
+        console.log("todo click");
+        if(gameStatus === 1){
+            btn.textContent = 'stop';
+            gameStatus = 0;
+        }else if(gameStatus === 0){
+            btn.textContent = 'start';
+            gameStatus = 1;
+        }
+    })
+    .setStartButtonInit(function(btn){
+        btn.textContent = 'stop';
     });
+
+
 
 canvasHelper.setClickEvent(function (x1, y1) {
     for (let index = 0; index < towerPlaceArea.length; index++) {
@@ -99,21 +132,21 @@ canvasHelper.setClickEvent(function (x1, y1) {
             if (isBuild && selectedTowerId) {
                 const msg = `Are you sure you want to build this tower?`;
                 if (window.confirm(msg)) {
-                    const towerXy =  towerPlaceArea.splice(index, 1)[0];
+                    const towerXy = towerPlaceArea.splice(index, 1)[0];
                     const newTower = towerFactory.getNewTowerByTowerId(selectedTowerId)
-                            .setLocation(towerXy.x, towerXy.y);
+                        .setLocation(towerXy.x, towerXy.y);
 
                     buildTower(newTower);
                     break;
 
-                }else {
+                } else {
                     console.log("cancel");
-                }  
+                }
             }
         }
-        
+
     }
-    
+
 })
 
 //user build tower
@@ -129,6 +162,9 @@ buildTower(
 function drawEmpty() {
     canvasHelper.clearRect();
 }
+function drawPaths(){
+    canvasHelper.drawPaths(paths);
+}
 function drawBuildLocation() {
     canvasHelper.drawTowerBuildLocation(towerPlaceArea);
 }
@@ -137,8 +173,10 @@ function monsterAnimation() {
     monsters.doAnimation();
 }
 function isGameOver() {
-    const gameOver = player.life === 0;
-    return gameOver;
+    const isPlayerDie = player.life === 0;
+    const monsterNomore = monsters.isMonstersAllFinish();
+    return isPlayerDie || monsterNomore;
+    //return isPlayerDie;
 }
 
 
@@ -148,18 +186,27 @@ function towerAnimation() {
 function missleAnimation() {
     missles.doAnimation();
 }
-function animate() {
-    drawEmpty();
-    drawBuildLocation();
-    monsterAnimation();
-    towerAnimation();
-    missleAnimation();
-    if (isGameOver()) {
-        documentHelper.updateGameInfo("game over");
-        return;
-    }
-    requestAnimationFrame(animate);
+function isPause(){
+    return gameStatus === 0;
 }
+let animationFrameId;
+function animate() {
+    if(!isPause()){
+        drawEmpty();
+        drawPaths();
+        drawBuildLocation();
+        monsterAnimation();
+        towerAnimation();
+        missleAnimation();
+        if (isGameOver()) {
+            documentHelper.updateGameInfo("game over");
+            cancelAnimationFrame(animationFrameId);
+            return;
+        }        
+    }
+    animationFrameId = requestAnimationFrame(animate);
+}
+
 
 function startGame() {
     documentHelper.updateGameInfo("game start");
