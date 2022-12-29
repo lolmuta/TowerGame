@@ -1,8 +1,11 @@
 # 塔防小遊戲
-
+- 初期畫面1
 ![image](https://user-images.githubusercontent.com/19727471/208283262-007e42a5-4ef2-404a-8062-18034a87dfcb.png)
+- 初期畫面2
 ![image](https://user-images.githubusercontent.com/19727471/208941829-18681238-0a20-4e46-93f9-47db296a3a85.png)
+- 初期畫面3
 ![image](https://user-images.githubusercontent.com/19727471/209054478-ada0ad8e-0170-47ef-b774-d4dd581f9310.png)
+- 初期畫面4
 
 
 - 專案特點
