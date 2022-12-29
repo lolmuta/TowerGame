@@ -6,6 +6,7 @@
 - 初期畫面3
 ![image](https://user-images.githubusercontent.com/19727471/209054478-ada0ad8e-0170-47ef-b774-d4dd581f9310.png)
 - 初期畫面4
+![image](https://user-images.githubusercontent.com/19727471/209942824-9c268faa-af16-41b4-8970-6c6c783bf1b7.png)
 
 
 - 專案特點
