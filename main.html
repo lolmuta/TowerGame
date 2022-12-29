@@ -7,17 +7,23 @@
 </head>
 
 <body>
-
-    <h1>Tower Game</h1>
-    <h2>life : <span id="life">2</span></h2>
-    <h2>score : <span id="score">0</span></h2>
-    <button id="btnStart">start</button>
+    <h1 class="font-code">Tower Game</h1>
+    <h2 class="font-code">Life : <span id="life">2</span></h2>
+    <h2 class="font-code">Score : <span id="score">0</span></h2>
+    <h2 class="font-code">
+    <div>Level Info : <span id="levelInfo">0</span></div>
+    Next : <progress id="nextLevelBar" value="0" max="100" style="border: 1px solid black; background-color: red;"></progress>
+    </h2>
+    <button id="btnRestart" style="display: none;">Restart</button>
+    <button id="btnStart">Start</button>
+    <button id="btnNext">Next</button>
     <pre id="gameInfo"></pre>
+    <br>
     <canvas id="canvasMain" class="canvas-main"></canvas>
     <aside>
-        <h1>select tower</h1>
+        <h1 class="font-code">select tower</h1>
         <div id="towerKind">
-            <div class="gallery">
+            <!-- <div class="gallery">
                 <img src="" alt="Cinque Terre" width="600" height="400">
                 <div class="desc">Add a description of the image here</div>
             </div>
@@ -29,7 +35,7 @@
             <div class="gallery">
                 <img src="" alt="Northern Lights" width="600" height="400">
                 <div class="desc">Add a description of the image here</div>
-            </div>
+            </div> -->
         </div>
 
     </aside>
@@ -39,7 +45,8 @@
 <script src="CommonHelper.js"></script>
 <script src="Monster.js"></script>
 <script src="Freq.js"></script>
-<script src="Monsters.js"></script>
+<!-- <script src="Monsters.js"></script> -->
+<script src="MonstersBatch.js"></script>
 <script src="Tower.js"></script>
 <script src="Towers.js"></script>
 <script src="Missle.js"></script>

@@ -87,19 +87,57 @@ class Tower{
 }
 
 const findWay = {
-    findNearestMonster : function(monsters, towerX, towerY, towerRAnge){
+    findNearestMonster : function(monsters, towerX, towerY, towerRange){
         let minDistance = Number.MAX_SAFE_INTEGER;
         let targetMonster;
         for (let index = 0; index < monsters.length; index++) {
             const monster = monsters[index];
             if(monster.isRunning()){
                 const distance = Math.sqrt((towerX - monster.x) ** 2 + (towerY - monster.y) ** 2);
-                const inRange = distance < towerRAnge;
+                const inRange = distance < towerRange;
                 if(inRange){
                     if(minDistance > distance){
                         targetMonster = monster;
                         minDistance = distance;
                     }
+                }
+            }                
+        }
+        const result = [];
+        result.push(targetMonster);
+        return result;
+    },
+    findFireRange : function(monsters, towerX, towerY, towerRange){
+        const result = [];
+        for (let index = 0; index < monsters.length; index++) {
+            const monster = monsters[index];
+            if(monster.isRunning()){
+                const distance = Math.sqrt((towerX - monster.x) ** 2 + (towerY - monster.y) ** 2);
+                const inRange = distance < towerRange;
+                if(inRange){
+                    result.push(monster);
+                }
+            }                
+        }
+        return result;
+    },
+    findHighLifeMonster : function(monsters, towerX, towerY, towerRange){
+        let targetMonster;
+        for (let index = 0; index < monsters.length; index++) {
+            const monster = monsters[index];
+            if(monster.isRunning()){
+                const distance = Math.sqrt((towerX - monster.x) ** 2 + (towerY - monster.y) ** 2);
+                const inRange = distance < towerRange;
+                if(inRange){
+                    if(!targetMonster){
+                        targetMonster = monster;
+                        continue;
+                    }
+                    if(targetMonster.life > monster.life){
+                        continue;
+                    }
+                    targetMonster = monster;
+                    continue;
                 }
             }                
         }
@@ -114,8 +152,8 @@ class TowerFactory{
             basicTower: function(){
                 return new Tower()
                     .setTowerImage("basicTower.jpg")
-                    .setTowerName("basic tower")
-                    .setTowerDesp("basic tower, cheap but damge low")
+                    .setTowerName("Basic Tower")
+                    .setTowerDesp("Basic tower, cheap but damge low")
                     .setColor('black')
                     .setSize(20, 20)
                     //.setLocation(100, 100)
@@ -129,18 +167,33 @@ class TowerFactory{
             advTower: function(){
                 return new Tower()
                     .setTowerImage("AdvTower.jpg")
-                    .setTowerName("adv tower")
-                    .setTowerDesp("adv tower, damge high but slow")
+                    .setTowerName("Advanced Tower")
+                    .setTowerDesp("Advanced tower, damge high but slow, will find in range life highest")
                     .setColor('yellow')
+                    .setSize(20, 20)
+                    //.setLocation(100, 100)
+                    .setDamge(4)
+                    .setRange(400)
+                    .setFreq(80)
+                    .setMonsters(monsters.getDrawMonstersPool())
+                    .setMisslePool(missles.getMisslePool())
+                    .setFindMonsterFunc(findWay.findHighLifeMonster);
+            },
+            rangeTower: function(){
+                return new Tower()
+                    .setTowerImage("RangeTower.jpg")
+                    .setTowerName("Range Tower")
+                    .setTowerDesp("Range tower, damge low but fire range")
+                    .setColor('green')
                     .setSize(20, 20)
                     //.setLocation(100, 100)
                     .setDamge(1)
                     .setRange(400)
-                    .setFreq(40)
+                    .setFreq(80)
                     .setMonsters(monsters.getDrawMonstersPool())
                     .setMisslePool(missles.getMisslePool())
-                    .setFindMonsterFunc(findWay.findNearestMonster);
-            }
+                    .setFindMonsterFunc(findWay.findFireRange);
+            },
         };
         this.towerKindDict = {};
         for (const towerId in this.createTowerFactory) {

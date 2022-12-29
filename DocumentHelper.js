@@ -38,6 +38,15 @@ class DocumentHelper {
         }
         return this;
     }
+    updateLevelInfo(levelInfo){
+        document.getElementById('levelInfo').innerHTML = levelInfo;
+        return this;
+    }
+    updateNextLevelBar(percent){
+        // const per100Width = 400;
+        // const updateWidth = per100Width * percent;
+        document.getElementById("nextLevelBar").value = percent * 100;
+    }
     setTowerKindSelectEvent(clickEvent){
         const towerKind = document.getElementById('towerKind');
         const childNodes = towerKind.childNodes;
@@ -58,5 +67,12 @@ class DocumentHelper {
     setStartButtonInit(initFunc){
         const btnStart = document.getElementById('btnStart');
         initFunc(btnStart);
+        return this;
     }
+    setNextButtonClickEvent(clickEvent){
+        const btnNext = document.getElementById('btnNext');
+        btnNext.addEventListener('click', clickEvent);
+        return this;
+    }
+    
 }

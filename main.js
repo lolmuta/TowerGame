@@ -2,7 +2,7 @@ const canvasHelper = new CanvasHelper(500, 500);
 const documentHelper = new DocumentHelper();
 
 const player = {
-    life: 12,
+    life: 5,
     score: 0
 }
 
@@ -26,28 +26,34 @@ const towerPlaceArea = [
     { x: 110 + 40, y: 110 + 20 },
     { x: 110 + 40, y: 110 + 40 + 20 },
 ]
+
+
 const monsters = new Monsters()
-    .addMonster(new Monster(20, 20, 'red', 2, 4,  paths))
-    .addMonster(new Monster(20, 20, 'green', 2, 4, paths))
-    .addMonster(new Monster(20, 20, 'red', 2, 4, paths))
-    .addMonster(new Monster(20, 20, 'green', 2, 4, paths))
-    .addMonster(new Monster(20, 20, 'red', 2, 4, paths))
-    .addMonster(new Monster(20, 20, 'green', 2, 4, paths))
-    // .addMonster(new Monster(20, 20, 'red', 2, 4, paths))
-    // .addMonster(new Monster(20, 20, 'green', 2, 4, paths))
-    // .addMonster(new Monster(20, 20, 'red', 2, 4, paths))
-    // .addMonster(new Monster(20, 20, 'green', 2, 4, paths))
-    // .addMonster(new Monster(20, 20, 'red', 2, 4, paths))
-    // .addMonster(new Monster(20, 20, 'green', 2, 4, paths))
-    // .addMonster(new Monster(20, 20, 'red', 2, 8, paths))
-    // .addMonster(new Monster(20, 20, 'green', 2, 8, paths))
-    // .addMonster(new Monster(20, 20, 'red', 2, 8, paths))
-    // .addMonster(new Monster(20, 20, 'green', 2, 8, paths))
-    // .addMonster(new Monster(20, 20, 'red', 2, 8, paths))
-    // .addMonster(new Monster(20, 20, 'green', 2, 8, paths))
-    .setFreqC(16)
-    .setFinishEvent(function () {
-        documentHelper.updateGameInfo("monsters all release");
+    .setLevelFreq(1000)
+    .addLevelInfo(
+        new LevelInfo()
+            .setDesc("level 1 basic monster")
+            .addMonster(new Monster(20, 20, 'red', 2, 2,  paths))
+            .addMonster(new Monster(20, 20, 'green', 2, 2, paths))
+            .addMonster(new Monster(20, 20, 'red', 2, 2, paths))
+            .addMonster(new Monster(20, 20, 'green', 2, 2, paths))
+            .addMonster(new Monster(20, 20, 'red', 2, 2, paths))
+            .addMonster(new Monster(20, 20, 'green', 2, 4, paths))
+            .setFreqC(16)
+    )
+    .addLevelInfo(
+        new LevelInfo()
+            .setDesc("level 2 basic monster")
+            .addMonster(new Monster(20, 20, 'red', 2, 4,  paths))
+            .addMonster(new Monster(20, 20, 'green', 2, 4, paths))
+            .addMonster(new Monster(20, 20, 'red', 2, 4, paths))
+            .addMonster(new Monster(20, 20, 'green', 2, 4, paths))
+            .addMonster(new Monster(20, 20, 'red', 2, 4, paths))
+            .addMonster(new Monster(20, 20, 'green', 2, 4, paths))
+            .setFreqC(16)
+    )
+    .setUpdateNextLevelBarEvent(function(per){
+        documentHelper.updateNextLevelBar(per);
     })
     .setMonsterReachDest(function (destMonster) {
         player.life--;
@@ -68,7 +74,14 @@ const monsters = new Monsters()
         canvasHelper.drawMonsterEllipse(x, y, w, h, color);
         const lifePercent = monster.currLife / monster.life;
         canvasHelper.drawMonsterLife(x, y, w, h, lifePercent);
-    });
+    })
+    //每當關卡開始的觸發事件
+    .setLevelStartEvent(function(levelInfo){
+        documentHelper.updateLevelInfo(levelInfo.desc);
+    })
+    
+    ;
+
 
 //定義飛彈
 const missles = new Missles()
@@ -96,7 +109,7 @@ function buildTower(tower) {
 }
 
 const towerFactory = new TowerFactory();
-let gameStatus = 1;//0:stop // 1: start // 2:restart
+let gameStatus = 0;//0:stop // 1: start // 2:game over
 documentHelper
     .updateTowerKind(towerFactory.getTowerKindDict())
     .setTowerKindSelectEvent( function (towerId) {
@@ -106,20 +119,30 @@ documentHelper
     })
     .setStartButtonClickEvent(function(e){
         const btn = e.target;
-        console.log("todo click");
         if(gameStatus === 1){
-            btn.textContent = 'stop';
+            btn.textContent = 'start';
             gameStatus = 0;
         }else if(gameStatus === 0){
-            btn.textContent = 'start';
+            btn.textContent = 'stop';
             gameStatus = 1;
+        }else {
+            throw "unknown game status click event"
         }
     })
     .setStartButtonInit(function(btn){
-        btn.textContent = 'stop';
-    });
-
-
+        if(gameStatus === 1){
+            btn.textContent = 'stop';
+        }else if(gameStatus === 0){
+            btn.textContent = 'start';
+        }else{
+            throw "unknown btn text"
+        }
+    })
+    .setNextButtonClickEvent(function(e){
+        const btn = e.target;
+        monsters.doNextLevel();
+    })
+    ;
 
 canvasHelper.setClickEvent(function (x1, y1) {
     for (let index = 0; index < towerPlaceArea.length; index++) {
@@ -144,9 +167,7 @@ canvasHelper.setClickEvent(function (x1, y1) {
                 }
             }
         }
-
     }
-
 })
 
 //user build tower
@@ -176,7 +197,6 @@ function isGameOver() {
     const isPlayerDie = player.life === 0;
     const monsterNomore = monsters.isMonstersAllFinish();
     return isPlayerDie || monsterNomore;
-    //return isPlayerDie;
 }
 
 

@@ -26,3 +26,6 @@ div.gallery {
     text-align: left;
     word-wrap: break-word;
   }
+.font-code{
+  font-family: monospace;
+}

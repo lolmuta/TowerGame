@@ -10,6 +10,16 @@ class Freq{
         this.f = f;
         return this;
     }
+    resetCount(){
+        this.count = 0;
+        return this;
+    }
+    getCount(){
+        return this.count;
+    }
+    getPercent(){
+        return this.count/this.freqC;
+    }
     go(){
         const isRun = this.count+1>= this.freqC;
         if(isRun){
